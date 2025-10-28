@@ -7,6 +7,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Debug logging
+  console.log('Weather App loaded successfully!');
+
   const getWeatherTheme = (temperature) => {
     if (temperature >= 30) {
       return 'from-orange-400 via-red-400 to-pink-400';
@@ -26,11 +29,10 @@ function App() {
   const fetchWeatherData = async (city) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       console.log('Fetching weather for:', city);
-      
-      // Use a predefined set of cities with known coordinates as fallback
+
       const cityCoordinates = {
         'london': { lat: 51.5074, lon: -0.1278, name: 'London', country: 'United Kingdom' },
         'new york': { lat: 40.7128, lon: -74.0060, name: 'New York', country: 'United States' },
@@ -46,7 +48,6 @@ function App() {
       let latitude, longitude, name, country;
 
       if (cityCoordinates[cityKey]) {
-        // Use predefined coordinates
         const coords = cityCoordinates[cityKey];
         latitude = coords.lat;
         longitude = coords.lon;
@@ -54,51 +55,51 @@ function App() {
         country = coords.country;
         console.log('Using predefined coordinates for:', name);
       } else {
-        // Try geocoding API
+        // Try geocoding A
         const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
         console.log('Geocoding URL:', geoUrl);
-        
+
         const geoResponse = await fetch(geoUrl);
         console.log('Geocoding response status:', geoResponse.status);
-        
+
         if (!geoResponse.ok) {
           throw new Error(`City "${city}" not found. Try: London, New York, Tokyo, Sydney, Paris, Mumbai, Delhi, or Bangalore`);
         }
-        
+
         const geoData = await geoResponse.json();
         console.log('Geocoding data:', geoData);
-        
+
         if (!geoData.results || geoData.results.length === 0) {
           throw new Error(`City "${city}" not found. Try: London, New York, Tokyo, Sydney, Paris, Mumbai, Delhi, or Bangalore`);
         }
-        
+
         const result = geoData.results[0];
         latitude = result.latitude;
         longitude = result.longitude;
         name = result.name;
         country = result.country;
       }
-      
+
       console.log('Using coordinates:', { latitude, longitude, name, country });
-      
+
       // Now get weather data
       const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`;
       console.log('Weather URL:', weatherUrl);
-      
+
       const weatherResponse = await fetch(weatherUrl);
       console.log('Weather response status:', weatherResponse.status);
-      
+
       if (!weatherResponse.ok) {
         throw new Error(`Weather service unavailable (${weatherResponse.status}). Please try again later.`);
       }
-      
+
       const weatherData = await weatherResponse.json();
       console.log('Weather data:', weatherData);
-      
+
       if (!weatherData.current) {
         throw new Error('Invalid weather data received. Please try again.');
       }
-      
+
       setWeatherData({
         temperature: Math.round(weatherData.current.temperature_2m),
         weatherCode: weatherData.current.weather_code,
@@ -138,7 +139,7 @@ function App() {
         setError('Unable to connect to weather service. Please check your internet connection.');
       }
     };
-    
+
     initializeApp();
   }, []);
 
@@ -155,9 +156,9 @@ function App() {
             Quick weather check for outdoor enthusiasts
           </p>
         </div>
-        
+
         <SearchBar onSearch={fetchWeatherData} loading={loading} />
-        
+
         {error && (
           <div className="max-w-md mx-auto mt-6 p-4 bg-red-500/20 backdrop-blur-sm rounded-lg border border-red-300/30">
             <p className="text-white text-center mb-3">{error}</p>
@@ -172,11 +173,11 @@ function App() {
             </button>
           </div>
         )}
-        
+
         {weatherData && !loading && (
           <WeatherCard weatherData={weatherData} />
         )}
-        
+
         {loading && (
           <div className="max-w-md mx-auto mt-8 p-8 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
             <div className="text-center">
