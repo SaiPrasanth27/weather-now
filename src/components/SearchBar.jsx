@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const SearchBar = ({ onSearch, loading }) => {
   const [city, setCity] = useState('');
