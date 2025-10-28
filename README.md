@@ -33,7 +33,7 @@ A beautiful weather application built for outdoor enthusiasts like Jamie who nee
    npm start
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+3. Open [https://weatherjaime.netlify.app/](https://weatherjaime.netlify.app) to view it in the browser.
 
 ## API
 
